@@ -656,10 +656,7 @@ extension Store {
 // MARK: - Deprecated after 0.38.0:
 
 extension EffectPublisher {
-  @available(iOS, deprecated: 9999.0, renamed: "unimplemented")
-  @available(macOS, deprecated: 9999.0, renamed: "unimplemented")
-  @available(tvOS, deprecated: 9999.0, renamed: "unimplemented")
-  @available(watchOS, deprecated: 9999.0, renamed: "unimplemented")
+  @available(*, deprecated, renamed: "unimplemented")
   public static func failing(_ prefix: String) -> Self {
     self.unimplemented(prefix)
   }
@@ -695,6 +692,7 @@ extension EffectPublisher {
 
 // MARK: - Deprecated after 0.31.0:
 
+@available(*, deprecated)
 extension AnyReducer {
   @available(
     *,
@@ -1070,6 +1068,7 @@ extension BindingAction {
   }
 }
 
+@available(*, deprecated)
 extension AnyReducer {
   @available(
     *, deprecated,
@@ -1112,6 +1111,7 @@ extension ViewStore {
 
 // MARK: - Deprecated after 0.20.0:
 
+@available(*, deprecated)
 extension AnyReducer {
   @available(*, deprecated, message: "Use the 'IdentifiedArray'-based version, instead.")
   public func forEach<ParentState, ParentAction, ParentEnvironment>(
