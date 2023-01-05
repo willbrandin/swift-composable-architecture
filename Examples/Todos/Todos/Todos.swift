@@ -7,7 +7,7 @@ enum Filter: LocalizedStringKey, CaseIterable, Hashable {
   case completed = "Completed"
 }
 
-struct Todos: ReducerProtocol {
+struct Todos: Reducer {
   struct State: BindableStateProtocol, Equatable {
     @BindingState var editMode: EditMode = .inactive
     @BindingState var filter: Filter = .all
@@ -36,7 +36,7 @@ struct Todos: ReducerProtocol {
   @Dependency(\.uuid) var uuid
   private enum TodoCompletionID {}
 
-  var body: some ReducerProtocol<State, Action> {
+  var body: some Reducer<State, Action> {
     BindingReducer()
     Reduce { state, action in
       switch action {

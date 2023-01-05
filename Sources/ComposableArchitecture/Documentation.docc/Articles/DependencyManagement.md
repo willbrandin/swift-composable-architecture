@@ -38,7 +38,7 @@ And suppose you have a reducer that handles an action for when the "Add todo" bu
 which appends a new todo to the end of the array:
 
 ```swift
-struct Todos: ReducerProtocol {
+struct Todos: Reducer {
   struct State {
     var todos: IdentifiedArrayOf<Todo> = []
     // ...
@@ -48,7 +48,7 @@ struct Todos: ReducerProtocol {
     // ...
   }
 
-  func reduce(into state: inout State, action: Action) -> EffectTask<Action> {
+  func reduce(into state: inout State, action: Action) -> Effect<Action> {
     switch action {
     case .addButtonTapped:
       state.todos.append(Todo(id: UUID())
@@ -99,7 +99,7 @@ The library comes with a controlled UUID generator and can be accessed by using 
 `@Dependency` property wrapper to add a dependency to the `Todos` reducer:
 
 ```swift
-struct Todos: ReducerProtocol {
+struct Todos: Reducer {
   @Dependency(\.uuid) var uuid
   // ...
 }
@@ -151,7 +151,7 @@ clock for time-based asynchrony, and a UUID initializer. All 3 dependencies can 
 feature's reducer:
 
 ```swift
-struct Todos: ReducerProtocol {
+struct Todos: Reducer {
   struct State {
     // ...
   }
@@ -224,7 +224,7 @@ With those few steps completed you can instantly access your API client dependen
 feature's reducer by using the `@Dependency` property wrapper:
 
 ```swift
-struct Todos: ReducerProtocol {
+struct Todos: Reducer {
   @Dependency(\.apiClient) var apiClient
   // ...
 }
@@ -438,7 +438,7 @@ needs the `play` endpoint, and doesn't need to loop, set volume or stop audio, t
 a dependency on just that one function:
 
 ```swift
-struct Feature: ReducerProtocol {
+struct Feature: Reducer {
   @Dependency(\.audioPlayer.play) var play
   // …
 }
@@ -459,12 +459,12 @@ data to be written to disk, or user defaults to be written, or any number of thi
 better to use mock versions of those dependencies so that the user can interact with your feature
 in a fully controlled environment.
 
-To do this you can use the ``ReducerProtocol/dependency(_:_:)`` method to override a reducer's
+To do this you can use the ``Reducer/dependency(_:_:)`` method to override a reducer's
 dependency with another value:
 
 ```swift
-struct Onboarding: ReducerProtocol {
-  var body: some ReducerProtocol<State, Action> {
+struct Onboarding: Reducer {
+  var body: some Reducer<State, Action> {
     Reduce { state, action in 
       // Additional onboarding logic
     }

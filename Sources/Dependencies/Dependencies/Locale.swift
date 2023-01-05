@@ -12,7 +12,7 @@ extension DependencyValues {
   /// wrapper to the property:
   ///
   /// ```swift
-  /// final class FeatureModel: ReducerProtocol {
+  /// final class FeatureModel: Reducer {
   ///   @Dependency(\.locale) var locale
   ///   // ...
   /// }

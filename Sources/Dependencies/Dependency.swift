@@ -17,7 +17,7 @@
 /// Or, if you are using the Composable Architecture:
 ///
 /// ```swift
-/// struct Feature: ReducerProtocol {
+/// struct Feature: Reducer {
 ///   @Dependency(\.apiClient) var apiClient
 ///   @Dependency(\.continuousClock) var clock
 ///   @Dependency(\.uuid) var uuid

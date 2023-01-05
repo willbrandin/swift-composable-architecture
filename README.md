@@ -79,19 +79,19 @@ The benefits of doing this are that you will instantly unlock testability of you
 
 As a basic example, consider a UI that shows a number along with "+" and "−" buttons that increment and decrement the number. To make things interesting, suppose there is also a button that when tapped makes an API request to fetch a random fact about that number and then displays the fact in an alert.
 
-To implement this feature we create a new type that will house the domain and behavior of the feature by conforming to `ReducerProtocol`:
+To implement this feature we create a new type that will house the domain and behavior of the feature by conforming to `Reducer`:
 
 ```swift
 import ComposableArchitecture
 
-struct Feature: ReducerProtocol {
+struct Feature: Reducer {
 }
 ```
 
 In here we need to define a type for the feature's state, which consists of an integer for the current count, as well as an optional string that represents the title of the alert we want to show (optional because `nil` represents not showing an alert):
 
 ```swift
-struct Feature: ReducerProtocol {
+struct Feature: Reducer {
   struct State: Equatable {
     var count = 0
     var numberFactAlert: String?
@@ -102,7 +102,7 @@ struct Feature: ReducerProtocol {
 We also need to define a type for the feature's actions. There are the obvious actions, such as tapping the decrement button, increment button, or fact button. But there are also some slightly non-obvious ones, such as the action of the user dismissing the alert, and the action that occurs when we receive a response from the fact API request:
 
 ```swift
-struct Feature: ReducerProtocol {
+struct Feature: Reducer {
   struct State: Equatable { … }
   enum Action: Equatable {
     case factAlertDismissed
@@ -117,11 +117,11 @@ struct Feature: ReducerProtocol {
 And then we implement the `reduce` method which is responsible for handling the actual logic and behavior for the feature. It describes how to change the current state to the next state, and describes what effects need to be executed. Some actions don't need to execute effects, and they can return `.none` to represent that:
 
 ```swift
-struct Feature: ReducerProtocol {
+struct Feature: Reducer {
   struct State: Equatable { … }
   enum Action: Equatable { … }
   
-  func reduce(into state: inout State, action: Action) -> EffectTask<Action> {
+  func reduce(into state: inout State, action: Action) -> Effect<Action> {
     switch action {
       case .factAlertDismissed:
         state.numberFactAlert = nil
@@ -325,7 +325,7 @@ Currently our reducer is using an effect that reaches out into the real world to
 It would be better for this dependency to be passed to the reducer so that we can use a live dependency when running the application on a device, but use a mocked dependency for tests. We can do this by adding a property to the `Feature` reducer:
 
 ```swift
-struct Feature: ReducerProtocol {
+struct Feature: Reducer {
   let numberFact: (Int) async throws -> String
   …
 }
@@ -428,7 +428,7 @@ extension DependencyValues {
 With that little bit of upfront work done you can instantly start making use of the dependency in any feature:
 
 ```swift
-struct Feature: ReducerProtocol {
+struct Feature: Reducer {
   struct State { … }
   enum Action { … }
   @Dependency(\.numberFact) var numberFact
@@ -595,4 +595,4 @@ This library is released under the MIT license. See [LICENSE](LICENSE) for detai
 [performance-article]: https://pointfreeco.github.io/swift-composable-architecture/main/documentation/composablearchitecture/performance
 [concurrency-article]: https://pointfreeco.github.io/swift-composable-architecture/main/documentation/composablearchitecture/swiftconcurrency
 [bindings-article]: https://pointfreeco.github.io/swift-composable-architecture/main/documentation/composablearchitecture/bindings
-[migrating-article]: https://pointfreeco.github.io/swift-composable-architecture/main/documentation/composablearchitecture/migratingtothereducerprotocol
+[migrating-article]: https://pointfreeco.github.io/swift-composable-architecture/main/documentation/composablearchitecture/migratingtotheReducer

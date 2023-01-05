@@ -272,7 +272,7 @@ final class EffectTests: XCTestCase {
   }
 
   func testDependenciesTransferredToEffects_Task() async {
-    struct Feature: ReducerProtocol {
+    struct Feature: Reducer {
       enum Action: Equatable {
         case tap
         case response(Int)
@@ -303,7 +303,7 @@ final class EffectTests: XCTestCase {
   }
 
   func testDependenciesTransferredToEffects_Run() async {
-    struct Feature: ReducerProtocol {
+    struct Feature: Reducer {
       enum Action: Equatable {
         case tap
         case response(Int)

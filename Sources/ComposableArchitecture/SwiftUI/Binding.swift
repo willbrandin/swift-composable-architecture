@@ -8,7 +8,7 @@ import SwiftUI
 /// be used in tandem with marking the `State` type with the ``BindableStateProtocol`` protocol:
 ///
 /// ```swift
-/// struct Feature: ReducerProtocol {
+/// struct Feature: Reducer {
 ///   struct State: BindableStateProtocol {
 ///     @BindingState var enableNotifications = false
 ///     @BindingState var sendEmailNotifications = false
@@ -385,9 +385,9 @@ where
 
 /// An action that describes simple mutations to some root state at a writable key path.
 ///
-/// When using the ``BindingState`` property wrapper in your feature's ``ReducerProtocol/State``
+/// When using the ``BindingState`` property wrapper in your feature's ``Reducer/State``
 /// for easily deriving SwiftUI bindings from fields, you must also add a `binding` case to your
-/// ``ReducerProtocol/Action`` enum that holds a ``BindingAction``:
+/// ``Reducer/Action`` enum that holds a ``BindingAction``:
 ///
 /// ```swift
 /// enum Action: BindableAction {
@@ -475,7 +475,7 @@ extension BindingAction {
   /// network request to fetch a fact about that integer with the following domain:
   ///
   /// ```swift
-  /// struct MyFeature: ReducerProtocol {
+  /// struct MyFeature: Reducer {
   ///   struct State: Equatable {
   ///     @BindingState var count = 0
   ///     var fact: String?
@@ -491,7 +491,7 @@ extension BindingAction {
   ///
   ///   @Dependency(\.numberFact) var numberFact
   ///
-  ///   var body: some ReducerProtocol<State, Action> {
+  ///   var body: some Reducer<State, Action> {
   ///     BindingReducer()
   ///     // ...
   ///   }

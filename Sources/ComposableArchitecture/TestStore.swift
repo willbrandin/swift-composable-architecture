@@ -43,7 +43,7 @@ import XCTestDynamicOverlay
 /// For example, given a simple counter reducer:
 ///
 /// ```swift
-/// struct Counter: ReducerProtocol {
+/// struct Counter: Reducer {
 ///   struct State: Equatable {
 ///     var count = 0
 ///   }
@@ -55,7 +55,7 @@ import XCTestDynamicOverlay
 ///
 ///   func reduce(
 ///     into state: inout State, action: Action
-///   ) -> EffectTask<Action> {
+///   ) -> Effect<Action> {
 ///     switch action {
 ///     case .decrementButtonTapped:
 ///       state.count -= 1
@@ -118,7 +118,7 @@ import XCTestDynamicOverlay
 /// and cancel token to debounce requests:
 ///
 /// ```swift
-/// struct Search: ReducerProtocol {
+/// struct Search: Reducer {
 ///   struct State: Equatable {
 ///     var query = ""
 ///     var results: [String] = []
@@ -135,7 +135,7 @@ import XCTestDynamicOverlay
 ///
 ///   func reduce(
 ///     into state: inout State, action: Action
-///   ) -> EffectTask<Action> {
+///   ) -> Effect<Action> {
 ///     switch action {
 ///     case let .queryChanged(query):
 ///       state.query = query
@@ -489,9 +489,9 @@ public final class TestStore<State, Action, ScopedState, ScopedAction, Environme
     *, deprecated,
     message:
       """
-      'AnyReducer' and 'Environment' have been deprecated in favor of 'ReducerProtocol' and 'DependencyValues'.
+      'AnyReducer' and 'Environment' have been deprecated in favor of 'Reducer' and 'DependencyValues'.
 
-      See the migration guide for more information: https://pointfreeco.github.io/swift-composable-architecture/main/documentation/composablearchitecture/reducerprotocol
+      See the migration guide for more information: https://pointfreeco.github.io/swift-composable-architecture/main/documentation/composablearchitecture/Reducer
       """
   )
   public var environment: Environment {
@@ -530,16 +530,16 @@ public final class TestStore<State, Action, ScopedState, ScopedAction, Environme
   /// - Parameters:
   ///   - initialState: The state the feature starts in.
   ///   - reducer: The reducer that powers the runtime of the feature.
-  public init<Reducer: ReducerProtocol>(
+  public init<R: Reducer>(
     initialState: @autoclosure () -> State,
-    reducer: Reducer,
+    reducer: R,
     prepareDependencies: (inout DependencyValues) -> Void = { _ in },
     file: StaticString = #file,
     line: UInt = #line
   )
   where
-    Reducer.State == State,
-    Reducer.Action == Action,
+    R.State == State,
+    R.Action == Action,
     State == ScopedState,
     Action == ScopedAction,
     Environment == Void
@@ -565,9 +565,9 @@ public final class TestStore<State, Action, ScopedState, ScopedAction, Environme
     *, deprecated,
     message:
       """
-      'AnyReducer' has been deprecated in favor of 'ReducerProtocol'.
+      'AnyReducer' has been deprecated in favor of 'Reducer'.
 
-      See the migration guide for more information: https://pointfreeco.github.io/swift-composable-architecture/main/documentation/composablearchitecture/reducerprotocol
+      See the migration guide for more information: https://pointfreeco.github.io/swift-composable-architecture/main/documentation/composablearchitecture/Reducer
       """
   )
   public init(
@@ -1878,7 +1878,7 @@ extension TestStore {
     )
 
     for effect in self.reducer.inFlightEffects {
-      _ = EffectPublisherWrapper(Effect<Never, Never>.cancel(id: effect.id)).sink { _ in }
+      _ = EffectPublisherWrapper(Effect<Never>.cancel(id: effect.id)).sink { _ in }
     }
     self.reducer.inFlightEffects = []
   }
@@ -2044,7 +2044,7 @@ public struct TestStoreTask: Hashable, Sendable {
   }
 }
 
-class TestReducer<State, Action>: ReducerProtocol {
+class TestReducer<State, Action>: Reducer {
   let base: Reduce<State, Action>
   var dependencies = DependencyValues()
   let effectDidSubscribe = AsyncStream<Void>.streamWithContinuation()
@@ -2060,10 +2060,10 @@ class TestReducer<State, Action>: ReducerProtocol {
     self.state = initialState
   }
 
-  func reduce(into state: inout State, action: TestAction) -> EffectTask<TestAction> {
+  func reduce(into state: inout State, action: TestAction) -> Effect<TestAction> {
     let reducer = self.base.dependency(\.self, self.dependencies)
 
-    let effects: EffectTask<Action>
+    let effects: Effect<Action>
     switch action.origin {
     case let .send(action):
       effects = reducer.reduce(into: &state, action: action)

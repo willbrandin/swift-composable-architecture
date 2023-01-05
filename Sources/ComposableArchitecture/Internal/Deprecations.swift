@@ -3,6 +3,17 @@ import Combine
 import SwiftUI
 import XCTestDynamicOverlay
 
+// MARK: - Deprecated after 1.0.0:
+
+@available(*, renamed: "Effect")
+public typealias EffectTask = Effect
+
+@available(*, renamed: "Reducer")
+public typealias ReducerProtocol = Reducer
+
+@available(*, renamed: "ReducerOf")
+public typealias ReducerProtocolOf<R: Reducer> = Reducer<R.State, R.Action>
+
 // MARK: - Deprecated after 0.47.2:
 
 @available(*, deprecated, renamed: "BindingState")
@@ -105,25 +116,6 @@ extension TextState: View {
   }
 }
 
-// MARK: - Deprecated after 0.42.0:
-
-/// This API has been deprecated in favor of ``ReducerProtocol``.
-/// Read <doc:MigratingToTheReducerProtocol> for more information.
-///
-/// A type alias to ``AnyReducer`` for source compatibility. This alias will be removed.
-@available(
-  *,
-  deprecated,
-  renamed: "AnyReducer",
-  message:
-    """
-    'Reducer' has been deprecated in favor of 'ReducerProtocol'.
-
-    See the migration guide for more information: https://pointfreeco.github.io/swift-composable-architecture/main/documentation/composablearchitecture/reducerprotocol
-    """
-)
-public typealias Reducer = AnyReducer
-
 // MARK: - Deprecated after 0.41.0:
 
 extension ViewStore {
@@ -134,7 +126,7 @@ extension ViewStore {
   public typealias Action = ViewAction
 }
 
-extension ReducerProtocol {
+extension Reducer {
   @available(*, deprecated, renamed: "_printChanges")
   public func debug() -> _PrintChangesReducer<Self> {
     self._printChanges()
@@ -149,11 +141,11 @@ extension ReducerProtocol {
       deprecated,
       message:
         """
-        Reducer bodies should return 'some ReducerProtocol<State, Action>' instead of 'Reduce<State, Action>'.
+        Reducer bodies should return 'some Reducer<State, Action>' instead of 'Reduce<State, Action>'.
         """
     )
     @inlinable
-    public static func buildFinalResult<R: ReducerProtocol>(_ reducer: R) -> Reduce<State, Action>
+    public static func buildFinalResult<R: Reducer>(_ reducer: R) -> Reduce<State, Action>
     where R.State == State, R.Action == Action {
       Reduce(reducer)
     }
@@ -597,7 +589,7 @@ extension EffectPublisher where Failure == Error {
   @available(
     *,
     deprecated,
-    message: "Use the non-failing version of 'EffectTask.task'"
+    message: "Use the non-failing version of 'Effect.task'"
   )
   public static func task(
     priority: TaskPriority? = nil,

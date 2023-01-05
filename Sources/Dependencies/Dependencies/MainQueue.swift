@@ -14,7 +14,7 @@
     /// that counts the number of seconds it's onscreen:
     ///
     /// ```
-    /// struct TimerReducer: ReducerProtocol {
+    /// struct TimerReducer: Reducer {
     ///   struct State {
     ///     var elapsed = 0
     ///   }
@@ -26,7 +26,7 @@
     ///
     ///   @Dependency(\.mainQueue) var mainQueue
     ///
-    ///   func reduce(into state: inout State, action: Action) -> EffectTask<Action> {
+    ///   func reduce(into state: inout State, action: Action) -> Effect<Action> {
     ///     switch action {
     ///     case .task:
     ///       return .run { send in

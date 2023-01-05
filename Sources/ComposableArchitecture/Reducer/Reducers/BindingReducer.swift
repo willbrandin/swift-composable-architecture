@@ -2,11 +2,11 @@ import SwiftUI
 
 /// A reducer that updates bindable state when it receives binding actions.
 ///
-/// This reducer should typically be composed into the ``ReducerProtocol/body-swift.property-97ymy``
+/// This reducer should typically be composed into the ``Reducer/body-swift.property-97ymy``
 /// of your feature's reducer:
 ///
 /// ```swift
-/// struct Feature: ReducerProtocol {
+/// struct Feature: Reducer {
 ///   struct State: BindableStateProtocol {
 ///     @BindingState var isOn = false
 ///     // More properties...
@@ -16,7 +16,7 @@ import SwiftUI
 ///     // More actions
 ///   }
 ///
-///   var body: some ReducerProtocolOf<Self> {
+///   var body: some ReducerOf<Self> {
 ///     BindingReducer()
 ///     Reduce { state, action in
 ///       // Your feature's logic...
@@ -30,7 +30,7 @@ import SwiftUI
 /// binding was written, you can flip the order of the composition:
 ///
 /// ```swift
-/// var body: some ReducerProtocolOf<Self> {
+/// var body: some ReducerOf<Self> {
 ///   Reduce { state, action in
 ///     // Your feature's logic...
 ///   }
@@ -41,7 +41,7 @@ import SwiftUI
 /// If you forget to compose the ``BindingReducer`` into your feature's reducer, then when a binding
 /// is written to it will cause a runtime purple Xcode warning letting you know what needs to be
 /// fixed.
-public struct BindingReducer<State, Action>: ReducerProtocol
+public struct BindingReducer<State, Action>: Reducer
 where Action: BindableAction, State == Action.State {
   /// Initializes a reducer that updates bindable state when it receives binding actions.
   @inlinable
@@ -55,7 +55,7 @@ where Action: BindableAction, State == Action.State {
   @inlinable
   public func reduce(
     into state: inout State, action: Action
-  ) -> EffectTask<Action> {
+  ) -> Effect<Action> {
     guard let bindingAction = (/Action.binding).extract(from: action)
     else { return .none }
 

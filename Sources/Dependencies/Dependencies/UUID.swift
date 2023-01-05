@@ -19,7 +19,7 @@ extension DependencyValues {
   ///   var description: String = ""
   /// }
   ///
-  /// struct TodosReducer: ReducerProtocol {
+  /// struct TodosReducer: Reducer {
   ///   struct State {
   ///     var todos: IdentifiedArrayOf<Todo> = []
   ///   }
@@ -30,7 +30,7 @@ extension DependencyValues {
   ///
   ///   @Dependency(\.uuid) var uuid
   ///
-  ///   func reduce(into state: inout State, action: Action) -> EffectTask<Action> {
+  ///   func reduce(into state: inout State, action: Action) -> Effect<Action> {
   ///     switch action {
   ///     case .create:
   ///       state.append(Todo(id: self.uuid())

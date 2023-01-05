@@ -15,7 +15,7 @@ extension DependencyValues {
   /// that models rolling a couple dice:
   ///
   /// ```swift
-  /// struct Game: ReducerProtocol {
+  /// struct Game: Reducer {
   ///   struct State {
   ///     var dice = (1, 1)
   ///   }
@@ -26,7 +26,7 @@ extension DependencyValues {
   ///
   ///   @Dependency(\.withRandomNumberGenerator) var withRandomNumberGenerator
   ///
-  ///   func reduce(into state: inout State, action: Action) -> EffectTask<Action> {
+  ///   func reduce(into state: inout State, action: Action) -> Effect<Action> {
   ///     switch action {
   ///     case .rollDice:
   ///       self.withRandomNumberGenerator { generator in

@@ -12,7 +12,7 @@ extension DependencyValues {
   /// wrapper to the generator's ``DateGenerator/now`` property:
   ///
   /// ```swift
-  /// final class FeatureModel: ReducerProtocol {
+  /// final class FeatureModel: Reducer {
   ///   @Dependency(\.date.now) var now
   ///   // ...
   /// }
