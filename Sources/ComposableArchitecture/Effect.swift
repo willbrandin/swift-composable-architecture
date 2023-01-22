@@ -394,14 +394,16 @@ public struct Send<Action> {
 // MARK: - Composing Effects
 
 extension EffectPublisher {
+    
+    
   /// Merges a variadic list of effects together into a single effect, which runs the effects at the
   /// same time.
   ///
   /// - Parameter effects: A list of effects.
   /// - Returns: A new effect
   @inlinable
-  public static func merge(_ effects: Self...) -> Self {
-    Self.merge(effects)
+  public static func merge(priority: TaskPriority? = nil, _ effects: Self...) -> Self {
+      Self.merge(priority: priority, effects)
   }
 
   /// Merges a sequence of effects together into a single effect, which runs the effects at the same
@@ -410,8 +412,8 @@ extension EffectPublisher {
   /// - Parameter effects: A sequence of effects.
   /// - Returns: A new effect
   @inlinable
-  public static func merge<S: Sequence>(_ effects: S) -> Self where S.Element == Self {
-    effects.reduce(.none) { $0.merge(with: $1) }
+  public static func merge<S: Sequence>(priority: TaskPriority? = nil, _ effects: S) -> Self where S.Element == Self {
+      effects.reduce(.none) { $0.merge(priority: priority, with: $1) }
   }
 
   /// Merges this effect and another into a single effect that runs both at the same time.
@@ -419,7 +421,7 @@ extension EffectPublisher {
   /// - Parameter other: Another effect.
   /// - Returns: An effect that runs this effect and the other at the same time.
   @inlinable
-  public func merge(with other: Self) -> Self {
+  public func merge(priority: TaskPriority? = nil, with other: Self) -> Self {
     switch (self.operation, other.operation) {
     case (_, .none):
       return self
@@ -429,7 +431,7 @@ extension EffectPublisher {
       return Self(operation: .publisher(Publishers.Merge(self, other).eraseToAnyPublisher()))
     case let (.run(lhsPriority, lhsOperation), .run(rhsPriority, rhsOperation)):
       return Self(
-        operation: .run { send in
+        operation: .run(priority) { send in
           await withTaskGroup(of: Void.self) { group in
             group.addTask(priority: lhsPriority) {
               await lhsOperation(send)
